@@ -1,6 +1,5 @@
-version: "3"
 services:
-  dns-server:
+  technitium:
     container_name: casjaysdevdocker-technitium-latest
     hostname: ${HOSTNAME}
     image: casjaysdevdocker/technitium:latest
@@ -24,7 +23,7 @@ services:
       - DNS_SERVER_ENABLE_BLOCKING=false                           #Sets the DNS server to block domain names using Blocked Zone and Block List Zone.
       - DNS_SERVER_ALLOW_TXT_BLOCKING_REPORT=false                 #Specifies if the DNS Server should respond with TXT records containing a blocked domain report for TXT type requests.
       - DNS_SERVER_BLOCK_LIST_URLS=www.example.com                 #A comma separated list of block list URLs.
-      - DNS_SERVER_FORWARDERS=103.124.104.174, 1.1.1.1, 8.8.8.8    #Comma separated list of forwarder addresses.
+      - DNS_SERVER_FORWARDERS=103.124.104.174,1.1.1.1,8.8.8.8      #Comma separated list of forwarder addresses.
       - DNS_SERVER_FORWARDER_PROTOCOL=Tcp                          #Forwarder protocol options: Udp, Tcp, Tls, Https, HttpsJson.
       - DNS_SERVER_LOG_USING_LOCAL_TIME=true                       #Enable this option to use local time instead of UTC for logging.
     volumes:
