@@ -3,8 +3,6 @@ services:
     container_name: casjaysdevdocker-technitium-latest
     hostname: ${HOSTNAME}
     image: casjaysdevdocker/technitium:latest
-    # For DHCP deployments, use "host" network mode and remove all the port mappings, including the ports array by commenting them
-    # network_mode: "host"
     ports:
       - "5380:5380/tcp" #DNS web console (HTTP)
       - "53:53/udp"     #DNS service
