@@ -1,0 +1,37 @@
+services:
+  dns-server:
+    image: casjaysdevdocker/technitium:latest
+    container_name: technitium
+    hostname: ${BASE_HOST_NAME}
+    restart: always
+    pull_policy: always
+    environment:
+      - DNS_SERVER_DOMAIN=${BASE_HOST_NAME}
+      - DNS_SERVER_ADMIN_PASSWORD=${APP_ADMIN_PASS}
+      - DNS_SERVER_FORWARDERS=103.124.104.174, 1.1.1.1, 8.8.8.8
+      - DNS_SERVER_WEB_SERVICE_ENABLE_HTTPS=false
+      - DNS_SERVER_WEB_SERVICE_USE_SELF_SIGNED_CERT=false
+      - DNS_SERVER_OPTIONAL_PROTOCOL_DNS_OVER_HTTP=true
+      - DNS_SERVER_RECURSION=Allow
+      - DNS_SERVER_ENABLE_BLOCKING=true
+      - DNS_SERVER_ALLOW_TXT_BLOCKING_REPORT=true
+      - DNS_SERVER_FORWARDER_PROTOCOL=Tcp
+      - DNS_SERVER_LOG_USING_LOCAL_TIME=true
+    ports:
+      - '53:53/udp'
+      - '53:53/tcp'
+      - '853:853/udp'
+      - '853:853/tcp'
+      - '172.17.0.1:5380:5380/tcp'
+      - '172.17.0.1:8053:8053/tcp'
+    volumes:
+      - './rootfs/config/technitium:/etc/dns'
+    sysctls:
+      - net.ipv4.ip_local_port_range=1024 65000
+    networks:
+      - technitium
+
+networks:
+  technitium:
+    name: technitium
+    external: false
