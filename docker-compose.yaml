@@ -1,0 +1,51 @@
+# nginx proxy address - http://172.17.0.1:61118
+
+name: technitium
+x-logging: &default-logging
+  options:
+    max-size: '5m'
+    max-file: '1'
+  driver: json-file
+
+services:
+  app:
+    image: casjaysdevdocker/technitium:latest
+    container_name: technitium-app
+    domainname: ${BASE_DOMAIN_NAME}
+    hostname: ${BASE_HOST_NAME:-$HOSTNAME}
+    restart: always
+    pull_policy: always
+    logging: *default-logging
+    environment:
+      - 'DNS_SERVER_RECURSION=Allow'
+      - 'DNS_SERVER_ENABLE_BLOCKING=true'
+      - 'DNS_SERVER_FORWARDER_PROTOCOL=Tcp'
+      - 'DNS_SERVER_LOG_USING_LOCAL_TIME=true'
+      - 'DNS_SERVER_WEB_SERVICE_HTTP_PORT=5380'
+      - 'DNS_SERVER_WEB_SERVICE_HTTPS_PORT=5381'
+      - 'DNS_SERVER_ALLOW_TXT_BLOCKING_REPORT=true'
+      - 'DNS_SERVER_ADMIN_PASSWORD=${APP_ADMIN_PASS}'
+      - 'DNS_SERVER_WEB_SERVICE_ENABLE_HTTPS=true'
+      - 'DNS_SERVER_DOMAIN=${BASE_DOMAIN_NAME:-HOSTNAME}'
+      - 'DNS_SERVER_OPTIONAL_PROTOCOL_DNS_OVER_HTTP=true'
+      - 'DNS_SERVER_WEB_SERVICE_USE_SELF_SIGNED_CERT=false'
+      - 'DNS_SERVER_FORWARDERS=82.29.128.43, 1.1.1.1, 8.8.8.8'
+    ports:
+      - '53:53/udp'
+      - '53:53/tcp'
+      - '853:853/udp'
+      - '853:853/tcp'
+      - '172.17.0.1:8053:8053/tcp' # DNS-over-HTTP
+      - '172.17.0.1:61118:5380/tcp' # DNS web console HTTP
+      - '172.17.0.1:61119:5381/tcp' # DNS web console HTTPS
+    volumes:
+      - './rootfs/config/technitium:/etc/dns'
+    sysctls:
+      - net.ipv4.ip_local_port_range=1024 65000
+    networks:
+      - technitium
+
+networks:
+  technitium:
+    name: technitium
+    external: false
