@@ -45,7 +45,7 @@ See `docker-compose.yaml` for complete list of configurable options.
 
 ## 📂 Volumes
 
-- `./rootfs/config/technitium` - Data storage
+- `./volumes/config/technitium` - Data storage
 
 ## 🔍 Logging
 
