@@ -39,7 +39,7 @@ services:
       - '172.17.0.1:61118:5380/tcp' # DNS web console HTTP
       - '172.17.0.1:61119:5381/tcp' # DNS web console HTTPS
     volumes:
-      - './rootfs/config/technitium:/etc/dns'
+      - './volumes/config/technitium:/etc/dns'
     sysctls:
       - net.ipv4.ip_local_port_range=1024 65000
     networks:
