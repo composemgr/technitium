@@ -11,7 +11,7 @@ services:
   app:
     image: casjaysdevdocker/technitium:latest
     container_name: technitium-app
-    domainname: ${BASE_DOMAIN_NAME}
+    domainname: ${BASE_DOMAIN_NAME:-example.com}
     hostname: ${BASE_HOST_NAME:-$HOSTNAME}
     restart: always
     pull_policy: always
@@ -24,7 +24,7 @@ services:
       - 'DNS_SERVER_WEB_SERVICE_HTTP_PORT=5380'
       - 'DNS_SERVER_WEB_SERVICE_HTTPS_PORT=5381'
       - 'DNS_SERVER_ALLOW_TXT_BLOCKING_REPORT=true'
-      - 'DNS_SERVER_ADMIN_PASSWORD=${APP_ADMIN_PASS}'
+      - 'DNS_SERVER_ADMIN_PASSWORD=${APP_ADMIN_PASS:-changeme_admin_password}'
       - 'DNS_SERVER_WEB_SERVICE_ENABLE_HTTPS=true'
       - 'DNS_SERVER_DOMAIN=${BASE_DOMAIN_NAME:-HOSTNAME}'
       - 'DNS_SERVER_OPTIONAL_PROTOCOL_DNS_OVER_HTTP=true'
