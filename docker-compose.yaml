@@ -30,6 +30,8 @@ services:
       - 'DNS_SERVER_OPTIONAL_PROTOCOL_DNS_OVER_HTTP=true'
       - 'DNS_SERVER_WEB_SERVICE_USE_SELF_SIGNED_CERT=false'
       - 'DNS_SERVER_FORWARDERS=82.29.128.43, 1.1.1.1, 8.8.8.8'
+      - 'CONTAINER_NAME=technitium-app'
+      - 'HOSTNAME=${BASE_HOST_NAME:-$HOSTNAME}'
     ports:
       - '53:53/udp'
       - '53:53/tcp'
@@ -42,10 +44,32 @@ services:
       - './volumes/config/technitium:/etc/dns'
     sysctls:
       - net.ipv4.ip_local_port_range=1024 65000
+    labels:
+      - 'traefik.enable=true'
+      - 'cloudflare.enable=true'
+      - 'traefik.docker.network=proxy'
+      - 'cloudflare.service=http://technitium-app:5380'
+      - 'cloudflare.hostname=technitium.${CLOUDFLARE_ZONE_NAME:-}'
+      - 'traefik.http.routers.technitium-app.entrypoints=http'
+      - 'traefik.http.routers.technitium-app-secure.tls=true'
+      - 'traefik.http.routers.technitium-app.rule=Host($(${BASE_HOST_NAME:-$HOSTNAME}))'
+      - 'traefik.http.middlewares.technitium-app-https-redirect.redirectscheme.scheme=https'
+      - 'traefik.http.routers.technitium-app.middlewares=technitium-app-https-redirect'
+      - 'traefik.http.routers.technitium-app-secure.entrypoints=https'
+      - 'traefik.http.routers.technitium-app-secure.rule=Host($(${BASE_HOST_NAME:-$HOSTNAME}))'
+      - 'traefik.http.routers.technitium-app-secure.tls.certresolver=cloudflare'
+      - 'traefik.http.routers.technitium-app-secure.service=technitium-app'
+      - 'traefik.http.services.technitium-app.loadbalancer.server.port=5380'
     networks:
       - technitium
+      - proxy
+      - cloudflare
 
 networks:
   technitium:
     name: technitium
     external: false
+  proxy:
+    external: true
+  cloudflare:
+    external: true
