@@ -30,6 +30,12 @@ services:
       DNS_SERVER_FORWARDERS: ${DNS_SERVER_FORWARDERS:-82.29.128.43, 1.1.1.1, 8.8.8.8}
       CONTAINER_NAME: technitium-app
       HOSTNAME: ${BASE_HOST_NAME:-$HOSTNAME}
+    healthcheck:
+      test: ['CMD', 'bash', '-c', 'exec 3<>/dev/tcp/127.0.0.1/5380']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     ports:
       - '53:53/tcp'
       - '53:53/udp'
